@@ -1,0 +1,158 @@
+<?php
+session_start();
+   
+    include("functions.php");
+    include("connection.php");
+    $invalid = '';
+
+    if($_SERVER['REQUEST_METHOD']== 'POST'){
+       
+        $phone = $_POST['phone'];
+        
+        $password = $_POST['password'];
+        
+        if(!empty($phone) && !empty($password)){
+            $query = "SELECT * FROM admin where phone = '$phone' || email= '$phone' limit 1" ;
+            
+            $result = mysqli_query($con, $query);
+            if($result){
+                if($result && mysqli_num_rows($result)>0){
+                    $user_data= mysqli_fetch_assoc($result);
+
+                    if($user_data['password']==$password){
+                        $_SESSION['phone'] = $user_data['phone'] ;
+                        header("Location: admin_page.php");
+                        die;
+                    }else{
+                        $invalid ="<em>ERROR: INVALID PASSWORD</em>";
+                    }
+
+                }else{
+                    $invalid = "<em>ERROR: INVALID USER</em>";
+                }
+            }
+           
+        }    
+    }
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN login</title>
+    <style>
+        body{
+            
+            text-align: center;
+            background: url("bg.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            color:rgb(149, 189, 29);
+        }
+     .head{
+        background-color: rgba(44, 62, 80, 0.5);
+        border: 1px solid;
+        border-color: rgba(440, 620, 80, 0.5);
+        width: auto;
+        height: auto;
+        margin: auto;
+        text-align: center;
+        padding: 10px;
+        align-items: center;
+        box-shadow: 1px 1px 25px  ;
+        color: rgb(149, 189, 29);
+        border-radius: 10px;
+        box-shadow: 5px 5px 25px black ;
+        text-align: center;
+     }
+        form{
+            background-color: rgba(44, 62, 80, 0.5);
+            border: 1px solid;
+            border-color: rgba(440, 620, 80, 0.5);
+            width: 350px;
+            height: auto;
+            margin: auto;
+            text-align: center;
+            padding: 20px;
+            margin-top: 10% ;
+            border-radius: 10px;
+            box-shadow: 5px 5px 25px black ;
+          
+        }
+        input{
+            background-color: rgb(234, 234, 236);
+            border: 1px solid;
+            width: 300px;
+            border-color:transparent;
+            margin: auto;
+            margin-top: 15px;
+            padding: 10px;
+            outline: none;
+            border-radius: 10px;
+        }
+        #bt{
+            width: 320px;
+            background-color: rgb(149, 189, 29);
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+         
+           
+        }
+        #bt:hover{
+            background-color: whitesmoke;
+            color:rgb(149, 189, 29);
+        }
+        p{
+            font-size: small;
+            color:rgb(143, 137, 137) ;
+        }
+        a{
+            color: rgb(111, 206, 17) ;
+            text-decoration: none ;
+        }
+        ::placeholder{
+            color: rgb(143, 137, 137);
+          
+            font-size: 25;
+        }
+        h6{
+        margin-top: -40px;
+        border-radius: 10px;
+        box-shadow: 5px 5px 25px black ;
+        width: 100px;
+
+   
+    
+}
+        h3{
+            box-shadow: 5px 5px 25px black ;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="head">
+        <h3>PERSONEL FILES TRACKING SYSTEM</h3>
+        <h6>ADMIN</h6>
+    </div>
+  <div class="form">
+    <form method="post">
+        <P>
+        <?php
+        echo $invalid;
+    
+?>
+        </P>
+        <input type="text" placeholder="phone nuber" name="phone" required><br>
+        <input type="password" placeholder="password" name="password" required><br>
+        <input type="submit" id="bt" value="LOGIN">
+        
+    </form>
+  </div>  
+</body>
+</html>
